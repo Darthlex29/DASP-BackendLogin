@@ -1,33 +1,30 @@
-from flask import Flask
-from Routes.UsersRoutes import main
-from Routes.authRoutes import authMain, status401, status404
-#from flask_sqlalchemy import SQLAlchemy
-from utils.setup import db, loginManagerApp, csrf
-from config import config
-from flask_cors import CORS
+from app import createApp, db
+from app.Routes.UsersRoutes import userMain
+from app.Routes.authRoutes import authMain
+from app.Routes.TicketsRoutes import ticketsMain
+from app.Routes.EmployeeRoutes import employeesMain
+from app.Routes.ClientRoutes import clientsMain
+from app.Routes.InvoiceRoutes import invoicesMain
+from app.Routes.DistributorRoutes import distributorsMain
+from app.Routes.HostingRoutes import hostingsMain
 
-def createApp(config_name):
-    app = Flask(__name__)
 
-    CORS(app, resources={r"/*": {"origins": "*"}})
+app = createApp('development')
 
-    app.config.from_object(config[config_name])
+app.register_blueprint(userMain)
+app.register_blueprint(authMain)
+app.register_blueprint(ticketsMain)
+app.register_blueprint(employeesMain)
+app.register_blueprint(clientsMain)
+app.register_blueprint(invoicesMain)
+app.register_blueprint(distributorsMain)
+app.register_blueprint(hostingsMain)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/dasp_project'
-    app.config['SQLALCHEMY_TRACK_MOTIFICATIONS'] = False
-    db.init_app(app)
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
 
-    loginManagerApp.init_app(app)
-    csrf.init_app(app)
+    app.run()
 
-    # blueprints
-    app.register_blueprint(main)
-    app.register_blueprint(authMain)
-
-    # Error handlers
-    app.register_error_handler(401, status401)
-    app.register_error_handler(404, status404)
-
-    return app
 
 
