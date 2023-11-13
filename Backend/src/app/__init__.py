@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import config
 from flask_cors import CORS
-from .utils import loginManagerApp#, csrf
+from .utils import loginManagerApp, csrf
 
 db = SQLAlchemy()
 
@@ -18,6 +18,7 @@ def createApp(config_name):
     loginManagerApp.init_app(app)
 
     '''#csrf.init_app(app)'''
+    
 
     # rutas
     from app import Routes

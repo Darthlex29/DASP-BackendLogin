@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 from ..Models import User
 from ..Services import UserDAO
-from ..utils import loginManagerApp, csrf
+from ..utils import loginManagerApp, csrf, Security
 from flask_login import login_user, logout_user, login_required, current_user
 
 authMain = Blueprint('authBlueprint', __name__)
@@ -83,12 +83,18 @@ def create():
 @authMain.route('/login/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        csrfToken = request.form.get('csrf_token')
+        print("bandera1")
+        print(csrfToken)
+        print("bandera2")
         email = request.form.get('email')  
         password = request.form.get('password') 
         loggedUser = UserDAO.login(email, password)
         if loggedUser is not None:
             if loggedUser.password is True:
                 login_user(loggedUser)
+                encodedToken = Security.generateToken(loggedUser)
+                print(encodedToken)
                 print("Contraseña correcta, usuario autenticado")
                 return redirect(url_for("authBlueprint.home"))
             else: 
@@ -98,6 +104,7 @@ def login():
         else:
             flash("Usuario no encontrado...")
             print("El usuario no existe")
+        
         return render_template('auth/login.html')
     else:
         return render_template('auth/login.html')
@@ -113,30 +120,25 @@ def protected():
     return "<h1>Esta en una vista protegida, unicamente para usuarios autenticados</h1>"
 
 #Funcion de prueba para mirar el tema del login 
-@authMain.route('/loggin/', methods=['GET', 'POST'])
+@authMain.route('/userlogin/', methods=['GET', 'POST'])
 #@csrf.exempt
-def logintk():
+def loginInUser():
     if request.method == 'POST':
-        print(request.form)
-        email = request.form.get('email')  
-        password = request.form.get('password') 
+        email = request.json.get('email')  
+        password = request.json.get('password')
         print(email)
         print(password)
         loggedUser = UserDAO.login(email, password)
         if loggedUser is not None:
             if loggedUser.password is True:
-                #login_user(loggedUser)
-                print("Contraseña correcta, usuario autenticado")
-                return redirect(url_for("authBlueprint.home"))
+                encodedToken = Security.generateToken(loggedUser)
+                return jsonify({'mensaje': 'Inicio de sesión exitoso', 'Token':encodedToken}), 200
             else: 
-                flash("Contraseña incorrecta, no se pudo autenticar")
-                print("Contraseña incorrecta, no se pudo autenticar")
-                
+                return jsonify({'mensaje': 'Error de autenticación: contraseña incorrecta'}), 401
         else:
-            flash("Usuario no encontrado...")
-            print("El usuario no existe")
-        return render_template('auth/login.html')
+            return jsonify({'message': 'Usuario no encontrado'}), 404
     else:
-        return render_template('auth/login.html')
+        return jsonify({'message': 'Method Not Allowed'}), 405
+    
     
     

@@ -71,10 +71,10 @@ def handleUserOfClientById(id):
             if client is not None:
                 return jsonify(client), 200
             else:
-                return jsonify({'message': 'Client no encontrado'}), 404
+                return jsonify({'message': 'User no found'}), 404
         elif request.method == 'PUT':
-            return jsonify({'message': 'Client no encontrado'}), 404
+            return jsonify({'message': 'Method Not Allowed'}), 405
         elif request.method == 'DELETE':
-            return jsonify({'message': 'Client no encontrado'}), 404
+            return jsonify({'message': 'Method Not Allowed'}), 405
     except Exception as ex:
         return jsonify({'message': str(ex)}), 500

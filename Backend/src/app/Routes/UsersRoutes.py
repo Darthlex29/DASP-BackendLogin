@@ -1,6 +1,7 @@
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
 from ..Models import User, UserVO
 from ..Services import UserDAO
+from ..utils import Security
 
 userMain = Blueprint('userBlueprint', __name__)
 
@@ -10,24 +11,27 @@ def index():
 
 @userMain.route('/users/', methods=['GET', 'POST'])
 def handleUsers():
-    try:
-        print(request.method)
-        if request.method == 'POST':
-            data = request.json
-            print('bandera1')
-            print(data)
-            affectedRows = UserDAO.createUser(data)
-            print(affectedRows)
-            if (affectedRows == 0):
-                return jsonify({'message': 'Operación POST exitosa'}), 201
-            else:
-                return jsonify({'message': 'Error on insert'})
-        elif request.method == 'GET':
-            users = UserDAO.getUsers()
-            return jsonify(users), 200
-        return render_template('auth/create.html')
-    except Exception as ex:
-        return jsonify({'message': str(ex)}), 500
+    hasAccess=Security.verifyToken(request.headers)
+    if hasAccess: 
+        try:
+            print(request.method)
+            if request.method == 'POST':
+                data = request.json
+                print(data)
+                affectedRows = UserDAO.createUser(data)
+                print(affectedRows)
+                if (affectedRows == 0):
+                    return jsonify({'message': 'Operación POST exitosa'}), 201
+                else:
+                    return jsonify({'message': 'Error on insert'})
+            elif request.method == 'GET':
+                users = UserDAO.getUsers()
+                return jsonify(users), 200
+            return render_template('auth/create.html')
+        except Exception as ex:
+            return jsonify({'message': str(ex)}), 500
+    else: 
+        return jsonify({'message': 'Unauthorized'}), 401
 
 
 @userMain.route('/user/<int:id>', methods=['GET', 'PUT', 'DELETE'])
@@ -118,3 +122,4 @@ def create():
         return render_template('auth/create.html')
     except Exception as ex:
         return jsonify({'message': str(ex)}), 500
+    
