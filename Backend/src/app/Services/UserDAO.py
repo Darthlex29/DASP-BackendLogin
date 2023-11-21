@@ -1,5 +1,8 @@
 from ..utils import getConnection
 from ..Models import User
+from .CountryDAO import CountryDAO
+from .RolDAO import RolDAO
+from .PayModeDAO import PayModeDAO
 from app import db
 
 
@@ -10,65 +13,40 @@ class UserDAO():
     def getUsers(self):
         try:
             connection = getConnection()
-
-            with connection.cursor() as cursor:
-                cursor.execute("SELECT * FROM user")
-                usuarios = cursor.fetchall()
-
-            users = []
-            for row in usuarios:
-                user = User(
-                    name=row[1],
-                    email=row[2],
-                    password=row[3],
-                    idDocument=row[4],
-                    documentType=row[5]
-                )
-                user.id = row[0]
-                user_json = user.to_JSON()
-                users.append(user_json)
-
+            users = User.query.all()
             connection.close()
             return users
         except Exception as ex:
-            print("error")
+            print("error 001")
             raise Exception(ex)
 
+    # Obtener la un usuario por un id 
     @classmethod
     def getUserByID(self, id):
         try:
             user = User.query.filter_by(id=id).first()
-            if user is not None:
-                #userJson = user.to_JSON()
-                return user
-            else:
-                return None
+            return user
         except Exception as ex:
-            print("error 404")
+            print("error 002")
             raise Exception(ex)
 
     @classmethod
     def getUserByEmail(self, email):
         try:
             user = User.query.filter_by(email=email).first()
-            if user is not None:
-                userJson = user.to_JSON()
-                return userJson
-            else:
-                print('error en la busqueda')
-                return None
+            return user
         except Exception as ex:
-            print("error 404")
+            print("error 003")
             raise Exception(ex)
 
-    # Crear User sin el hash 
+    # Crear User sin el hash
     @classmethod
     def create_User(self, data):
         try:
             connection = getConnection()
             with connection.cursor() as cursor:
                 affectedRows = cursor.rowcount
-
+            
             nuevoUser = User(**data)
 
             db.session.add(nuevoUser)
@@ -76,10 +54,10 @@ class UserDAO():
             connection.close()
             return affectedRows
         except Exception as ex:
-            print("error")
+            print("error 004")
             return Exception(ex)
 
-    #Clase que actualiza el usuario
+    # Clase que actualiza el usuario
     @classmethod
     def uptadeUser(self, id, data):
         try:
@@ -94,10 +72,10 @@ class UserDAO():
             else:
                 return False
         except Exception as ex:
-            print("error 404")
+            print("error 005")
             raise Exception(ex)
 
-    #Clase que elimina el usuario 
+    # Clase que elimina el usuario
     @classmethod
     def deleteUser(self, id):
         try:
@@ -106,59 +84,56 @@ class UserDAO():
             db.session.commit()
             return user
         except Exception as ex:
-            print("error")
+            print("error 006")
             return Exception(ex)
-        
 
-    #Clase que se encarga de la verificacion mediante el email 
-    @classmethod  
-    def login(self, email, password):
-        try:
-            user = User.query.filter_by(email=email).first()
-            if user is not None:
-                isPasswordCorrect = User.checkPassword(user.password, password)
-                user.password = isPasswordCorrect
-                return user
-            else: 
-                return None
-        except Exception as ex:
-            raise Exception(ex)
-        
-    #Crearte user con el hash 
+    # Crearte user con el hash
     @classmethod
-    def createUser(self, data):        
+    def createUser(self, data):
         try:
             connection = getConnection()
             nuevoUser = User(**data)
-            nuevoUser.hashPassword()
-            with connection.cursor() as cursor:
-                affectedRows = cursor.rowcount
+            print('entro1')
+            
+            if(nuevoUser.validateInformationByRol()):
+                print(data)
+                nuevoUser.hashPassword()
+                print('entro2')
+                #print(nuevoUser.password)
+                with connection.cursor() as cursor:
+                   affectedRows = cursor.rowcount
 
-            db.session.add(nuevoUser)
-            db.session.commit()
-            connection.close()
-            return affectedRows
+                db.session.add(nuevoUser)
+                db.session.commit()
+                connection.close()
+                return affectedRows
+            else: 
+                print("error 013")
+                connection.close()
+                return None
         except Exception as ex:
-            print("error")
+            print("error 008")
             return Exception(ex)
 
-    #Esta solo sirve para utilizar como guia en el hasheo del password 
     @classmethod
-    def createUserHP(self, data):
-        nuevoUser = User(**data)
-        password = nuevoUser.password
-        #print('bandera1')
-        print(password)
-        nuevoUser.hashPassword()
-        print(nuevoUser.password)
-        pss=nuevoUser.password
-        #print(nuevoUser.checkPassword(pss, nuevoUser.password))
-        #isValid = nuevoUser.checkPassword(pss, password)
-        #print('Encontraste tu solucion? ')
-        #print("La contraseña es válida:", isValid)
-        #print("Ahora verificaremos que hace cuando no es la contraseña: ")
-        #otraPss='123.abc'
-        #isValid = nuevoUser.checkPassword(pss, otraPss)
-        #print("La contraseña es válida:", isValid)
+    def getDetailsToUser(cls, user): 
+        try: 
+            if user is None:
+                return None, None, None  # O retorna algún valor predeterminado que tenga sentido en tu contexto
+            country = CountryDAO.getCountryById(user.country_id)
+            countryJson = country.to_JSON() if country else None
 
-        return nuevoUser
+            rol = RolDAO.getRolById(user.rol_id)
+            rolJson = rol.to_JSON() if rol else None
+
+            payMode = PayModeDAO.getPayModeById(user.payMode_id)
+            payModeJson = payMode.to_JSON() if payMode else None
+
+            return countryJson, rolJson, payModeJson
+        except Exception as ex: 
+            return (f"Error 014: {ex}")
+        
+    @classmethod
+    def getUserBuyout(self, user):
+        return user.buyouts
+

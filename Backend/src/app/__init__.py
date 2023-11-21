@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import config
 from flask_cors import CORS
-from .utils import loginManagerApp, csrf
+from .utils import loginManagerApp#, csrf
 
 db = SQLAlchemy()
 

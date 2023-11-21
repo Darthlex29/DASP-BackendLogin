@@ -12,7 +12,7 @@ class DistributorDAO():
                 affectedRows = cursor.rowcount
 
             nuevoDistributor = Distributor(**data)
-
+            
             db.session.add(nuevoDistributor)
             db.session.commit()
             connection.close()
@@ -73,3 +73,4 @@ class DistributorDAO():
         except Exception as ex:
             print("error")
             return Exception(ex)
+        

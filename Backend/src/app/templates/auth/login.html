@@ -22,8 +22,6 @@
 
     {% endwith %}
     <form action="/login" method="post">
-      <!-- -->
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-group">
           <label for="email">Correo electrónico</label>
           <input type="email" class="form-control" id="email" name="email" placeholder="Ingrese su correo electrónico">

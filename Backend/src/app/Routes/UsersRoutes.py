@@ -14,19 +14,26 @@ def handleUsers():
     hasAccess=Security.verifyToken(request.headers)
     if hasAccess: 
         try:
-            print(request.method)
             if request.method == 'POST':
                 data = request.json
-                print(data)
                 affectedRows = UserDAO.createUser(data)
-                print(affectedRows)
                 if (affectedRows == 0):
                     return jsonify({'message': 'Operación POST exitosa'}), 201
                 else:
-                    return jsonify({'message': 'Error on insert'})
+                    return jsonify({'message': 'Error on insert'}), 400
             elif request.method == 'GET':
                 users = UserDAO.getUsers()
-                return jsonify(users), 200
+                usersdetails_json = []
+                for user in users:
+                    userJSON = user.to_JSON()
+                    countryJson, rolJson, payModeJson = UserDAO.getDetailsToUser(user)
+                    usersdetails_json.append({
+                        'user': userJSON,
+                        'country': countryJson,
+                        'rol': rolJson,
+                        'payMode': payModeJson
+                    }) 
+                return jsonify(usersdetails_json), 200
             return render_template('auth/create.html')
         except Exception as ex:
             return jsonify({'message': str(ex)}), 500
@@ -34,92 +41,81 @@ def handleUsers():
         return jsonify({'message': 'Unauthorized'}), 401
 
 
-@userMain.route('/user/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+@userMain.route('/users/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 def handleUserById(id):
-    try:
-        if request.method == 'GET':
-            user = UserDAO.getUserByID(id)
-            if user is not None:
-                if isinstance(user, User):
-                    userJSON = user.to_JSON()
-                    return jsonify(userJSON), 200
+    hasAccess=Security.verifyToken(request.headers)
+    if hasAccess: 
+        try:
+            if request.method == 'GET':
+                user = UserDAO.getUserByID(id)
+                if user is not None:
+                    if isinstance(user, User):
+                        userJSON = user.to_JSON()
+                        countryJson, rolJson, payModeJson = UserDAO.getDetailsToUser(user)
+                        userdetails_json = ({
+                            'user': userJSON,
+                            'country': countryJson,
+                            'rol': rolJson,
+                            'payMode': payModeJson
+                        })
+                        return jsonify(userdetails_json), 200
+                    else:
+                        return jsonify({'message': str(ex)}), 500
+                    
                 else:
-                    return jsonify({'message': str(ex)}), 500
-                
-            else:
-                return jsonify({'message': 'Usuario no encontrado'}), 404
-        elif request.method == 'PUT':
-            data = request.json
-            print(data)
-            user = UserDAO.uptadeUser(id, data)
-            if user is not None:
-                return jsonify({'message': 'Usuario actualizado con éxito'}), 200
-            else:
-                return jsonify({'message': 'Usuario no encontrado'}), 404
-        elif request.method == 'DELETE':
-            user = UserDAO.getUserByID(id)
-            if user is not None:
-                # Llama a la función que elimina al usuario
-                is_deleted = UserDAO.deleteUser(id)
-                if is_deleted:
-                    return jsonify({'message': 'Usuario eliminado con éxito'}), 200
+                    return jsonify({'message': 'Usuario no encontrado'}), 404
+            elif request.method == 'PUT':
+                data = request.json
+                print(data)
+                user = UserDAO.uptadeUser(id, data)
+                if user is not None:
+                    return jsonify({'message': 'Usuario actualizado con éxito'}), 200
                 else:
-                    return jsonify({'message': 'No se pudo eliminar al usuario'}), 500
-            else:
-                return jsonify({'message': 'Usuario no encontrado'}), 404
-    except Exception as ex:
-        return jsonify({'message': str(ex)}), 500
+                    return jsonify({'message': 'Usuario no encontrado'}), 404
+            elif request.method == 'DELETE':
+                user = UserDAO.getUserByID(id)
+                if user is not None:
+                    is_deleted = UserDAO.deleteUser(id)
+                    if is_deleted:
+                        return jsonify({'message': 'Usuario eliminado con éxito'}), 200
+                    else:
+                        return jsonify({'message': 'No se pudo eliminar al usuario'}), 500
+                else:
+                    return jsonify({'message': 'Usuario no encontrado'}), 404
+        except Exception as ex:
+            return jsonify({'message': str(ex)}), 500
+    else: 
+        return jsonify({'message': 'Unauthorized'}), 401
 
-@userMain.route('/user/<string:email>', methods=['GET', 'PUT', 'DELETE'])
+@userMain.route('/users/<string:email>', methods=['GET', 'PUT', 'DELETE'])
 def handleUserByEmail(email):
-    try:
-        if request.method == 'GET':
-            user = UserDAO.getUserByEmail(email)
-            if user is not None:
-                return jsonify(user), 200
-            else:
-                return jsonify({'message': 'Usuario no encontrado'}), 404
-        elif request.method == 'PUT':
-            return jsonify({'message': 'Funcion no habilitada'}), 501
-        elif request.method == 'DELETE':
-            return jsonify({'message': 'Funcion no habilitada'}), 501
+    hasAccess=Security.verifyToken(request.headers)
+    if hasAccess:
+        try:
+            if request.method == 'GET':
+                user = UserDAO.getUserByEmail(email)
+                if user is not None:
 
-    except Exception as ex:
-        return jsonify({'message': str(ex)}), 500
+                    user_json = user.to_JSON()
+                    countryJson, rolJson, payModeJson = UserDAO.getDetailsToUser(user)
 
-# Eliminar los que esten de aqui para abajo 
+                    userDetails_json = {
+                        'user': user_json,
+                        'country': countryJson,
+                        'rol': rolJson,
+                        'payMode': payModeJson
+                    }
+                    return jsonify(userDetails_json), 200
+                else:
+                    return jsonify({'message': 'Usuario no encontrado'}), 404
+            elif request.method == 'PUT':
+                return jsonify({'message': 'Funcion no habilitada'}), 501
+            elif request.method == 'DELETE':
+                return jsonify({'message': 'Funcion no habilitada'}), 501
 
-@userMain.route('/test/', methods=['GET', 'POST'])
-def testing():
-    try:
-        print(request.method)
-        if request.method == 'POST':
-            data = request.json
-            UserDAO.createUserHP(data)
-            return jsonify({''}), 200
-        elif request.method == 'GET':
-            users = UserDAO.getUsers()
-            return jsonify(users), 200
-        return render_template('auth/create.html')
-    except Exception as ex:
-        return jsonify({'message': str(ex)}), 500
-
-
-@userMain.route('/users/sinhp/', methods=['GET', 'POST'])
-def create():
-    try:
-        print(request.method)
-        if request.method == 'POST':
-            data = request.json
-            affectedRows = UserDAO.create_User(data)
-            if affectedRows == 0:
-                return jsonify({'message': 'Operación POST exitosa'}), 201
-            else:
-                return jsonify({'message': 'Error on insert'})
-        elif request.method == 'GET':
-            users = UserDAO.getUsers()
-            return jsonify(users), 200
-        return render_template('auth/create.html')
-    except Exception as ex:
-        return jsonify({'message': str(ex)}), 500
+        except Exception as ex:
+            return jsonify({'message': str(ex)}), 500
+    else: 
+        return jsonify({'message': 'Unauthorized'}), 401
+    
     

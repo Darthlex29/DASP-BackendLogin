@@ -24,13 +24,10 @@ class HostingDAO():
     @classmethod
     def getHostings(self):
         try:
+            connection = getConnection()
             allHostings = Hosting.query.all()
-
-            hostings = []
-            for hosting in allHostings:
-                hostingJson = hosting.to_JSON()
-                hostings.append(hostingJson)
-            return hostings
+            connection.close()
+            return allHostings
         except Exception as ex:
             print("error")
             raise Exception(ex)
@@ -73,3 +70,7 @@ class HostingDAO():
         except Exception as ex:
             print("error")
             return Exception(ex)
+
+    @classmethod
+    def getHostingPlan(self, hosting):
+        return hosting.plan
