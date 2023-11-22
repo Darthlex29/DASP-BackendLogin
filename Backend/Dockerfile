@@ -14,4 +14,6 @@ RUN apk add --no-cache build-base mariadb-dev mariadb-connector-c-dev && \
 # Instala las dependencias
 RUN pip install -r requirements.txt
 
+EXPOSE 5000
+
 CMD ["python", "src/app.py"]
