@@ -1,4 +1,3 @@
-from ..utils import getConnection
 from ..Models import Platform
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
@@ -8,16 +7,11 @@ class PlatformDAO():
     @classmethod
     def createPlatform(self, data):
         try:
-            connection = getConnection()
-            with connection.cursor() as cursor:
-                affectedRows = cursor.rowcount
-
             nuevoPlatform = Platform(**data)
 
             db.session.add(nuevoPlatform)
             db.session.commit()
-            connection.close()
-            return affectedRows
+            return nuevoPlatform
         except Exception as ex:
             print("error")
             return Exception(ex)

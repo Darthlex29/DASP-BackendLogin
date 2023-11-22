@@ -1,5 +1,4 @@
 from ..Models import Hosting
-from ..utils import getConnection
 from app import db
 
 class HostingDAO():
@@ -7,16 +6,11 @@ class HostingDAO():
     @classmethod
     def createHosting(self, data):
         try:
-            connection = getConnection()
-            with connection.cursor() as cursor:
-                affectedRows = cursor.rowcount
-
             nuevoHosting = Hosting(**data)
 
             db.session.add(nuevoHosting)
             db.session.commit()
-            connection.close()
-            return affectedRows
+            return nuevoHosting
         except Exception as ex:
             print("error")
             return Exception(ex)
@@ -24,9 +18,7 @@ class HostingDAO():
     @classmethod
     def getHostings(self):
         try:
-            connection = getConnection()
             allHostings = Hosting.query.all()
-            connection.close()
             return allHostings
         except Exception as ex:
             print("error")

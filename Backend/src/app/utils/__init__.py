@@ -1,3 +1,2 @@
-from .DatabaseSql import getConnection
-from .setup import db, loginManagerApp#, csrf
+from .setup import db, loginManagerApp
 from .security import Security

@@ -1,4 +1,3 @@
-from ..utils import getConnection
 from ..Models import PayMode
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
@@ -8,16 +7,11 @@ class PayModeDAO():
     @classmethod
     def createPayMode(self, data):
         try:
-            connection = getConnection()
-            with connection.cursor() as cursor:
-                affectedRows = cursor.rowcount
-
             nuevoPayMode = PayMode(**data)
 
             db.session.add(nuevoPayMode)
             db.session.commit()
-            connection.close()
-            return affectedRows
+            return nuevoPayMode
         except Exception as ex:
             print("error")
             return Exception(ex)

@@ -1,4 +1,3 @@
-from ..utils import getConnection
 from ..Models import PayPlan
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
@@ -8,16 +7,10 @@ class PayPlanDAO():
     @classmethod
     def createPayPlan(self, data):
         try:
-            connection = getConnection()
-            with connection.cursor() as cursor:
-                affectedRows = cursor.rowcount
-
             nuevoPayPlan = PayPlan(**data)
-
             db.session.add(nuevoPayPlan)
             db.session.commit()
-            connection.close()
-            return affectedRows
+            return nuevoPayPlan
         except Exception as ex:
             print("error")
             return Exception(ex)
@@ -41,7 +34,6 @@ class PayPlanDAO():
         try:
             platform = PayPlan.query.filter_by(id=id).first()
             if platform is not None:
-                #platformJson = platform.to_JSON()
                 return platform
             else:
                 return None

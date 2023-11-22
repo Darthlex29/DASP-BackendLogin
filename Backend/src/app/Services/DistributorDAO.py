@@ -1,5 +1,4 @@
 from ..Models import Distributor
-from ..utils import getConnection
 from app import db
 
 class DistributorDAO():
@@ -7,16 +6,10 @@ class DistributorDAO():
     @classmethod
     def createDistributor(self, data):
         try:
-            connection = getConnection()
-            with connection.cursor() as cursor:
-                affectedRows = cursor.rowcount
-
             nuevoDistributor = Distributor(**data)
-            
             db.session.add(nuevoDistributor)
             db.session.commit()
-            connection.close()
-            return affectedRows
+            return nuevoDistributor
         except Exception as ex:
             print("error")
             return Exception(ex)

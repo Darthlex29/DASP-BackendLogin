@@ -14,12 +14,11 @@ def handleTickets():
             print(request.method)
             if request.method == 'POST':
                 data = request.json
-                affectedRows = TicketDAO.createTicket(data)
-                print(affectedRows)
-                if (affectedRows == 0):
+                result = TicketDAO.createTicket(data)
+                if isinstance(result, Ticket):  
                     return jsonify({'message': 'Operación POST exitosa'}), 201
                 else:
-                    return jsonify({'message': 'Error on insert'})
+                    return jsonify({'message': 'Error desconocido'}), 500
             elif request.method == 'GET':
                 tickets = TicketDAO.getTickets()
                 return jsonify(tickets), 200

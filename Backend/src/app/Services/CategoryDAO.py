@@ -1,5 +1,4 @@
 from ..Models import Category
-from ..utils import getConnection
 from app import db
 
 class CategoryDAO():
@@ -7,16 +6,10 @@ class CategoryDAO():
     @classmethod
     def createCategory(self, data):
         try:
-            connection = getConnection()
-            with connection.cursor() as cursor:
-                affectedRows = cursor.rowcount
-
             nuevoCategory = Category(**data)
-
             db.session.add(nuevoCategory)
             db.session.commit()
-            connection.close()
-            return affectedRows
+            return nuevoCategory
         except Exception as ex:
             print("error")
             return Exception(ex)
@@ -40,7 +33,6 @@ class CategoryDAO():
         try:
             category = Category.query.filter_by(id=id).first()
             if category is not None:
-                #categoryJson = category.to_JSON()
                 return category
             else:
                 return None

@@ -15,12 +15,11 @@ def handleDomains():
             print(request.method)
             if request.method == 'POST':
                 data = request.json
-                affectedRows = DomainDAO.createDomain(data)
-                print(affectedRows)
-                if (affectedRows == 0):
+                result = DomainDAO.createDomain(data)
+                if isinstance(result, domain):  
                     return jsonify({'message': 'Operación POST exitosa'}), 201
                 else:
-                    return jsonify({'message': 'Error on insert'})
+                    return jsonify({'message': 'Error desconocido'}), 500
             elif request.method == 'GET':
                 domains = Verifications.getDomainsOfCurrentUser()
                 if domains is None:

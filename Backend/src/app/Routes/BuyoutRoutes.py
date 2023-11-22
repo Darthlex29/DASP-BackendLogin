@@ -14,15 +14,11 @@ def handleBuyouts():
             if request.method == 'POST':
                 data = request.json
                 result = BuyoutDAO.createBuyout(data)
-                print(result)
-                if isinstance(result, int):
-                    if result == 0:
-                        return jsonify({'message': 'Operación POST exitosa'}), 201
-                    else:
-                        return jsonify({'message': 'Error on insert'}), 500
 
+                if isinstance(result, Buyout): 
+                    return jsonify({'message': 'Operación POST exitosa'}), 201
                 elif 'error' in result:
-                    return jsonify(result), 400
+                    return jsonify({'error': result['error']}), 400
                 else:
                     return jsonify({'message': 'Error desconocido'}), 500
             elif request.method == 'GET':

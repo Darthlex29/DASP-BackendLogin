@@ -75,12 +75,11 @@ def create():
         # Aquí puedes procesar los datos, por ejemplo, guardarlos en una base de datos
         # o realizar cualquier otra acción necesaria.
         print(data)
-        affectedRows = UserDAO.createUser(data)
-        print(affectedRows)
-        if (affectedRows == 0):
+        result = UserDAO.createUser(data)
+        if isinstance(result, User):  
             return jsonify({'message': 'Operación POST exitosa'}), 201
         else:
-            return jsonify({'message': 'Error on insert'}), 500
+            return jsonify({'message': 'Error desconocido'}), 500
     elif request.method == 'GET':
         return jsonify({'message': 'Method Not Allowed'}), 405  
     

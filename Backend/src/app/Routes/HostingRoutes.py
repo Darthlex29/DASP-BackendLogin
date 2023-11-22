@@ -14,11 +14,11 @@ def handleHostings():
             print(request.method)
             if request.method == 'POST':
                 data = request.json
-                affectedRows = HostingDAO.createHosting(data)
-                if affectedRows == 0:
+                result = HostingDAO.createHosting(data)
+                if isinstance(result, Hosting):  
                     return jsonify({'message': 'Operación POST exitosa'}), 201
                 else:
-                    return jsonify({'message': 'Error en la inserción'}), 500
+                    return jsonify({'message': 'Error desconocido'}), 500
             elif request.method == 'GET':
                 hostings = Verifications.getHostingsOfCurrentUser()
                 if hostings is None:

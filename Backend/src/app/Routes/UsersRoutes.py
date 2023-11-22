@@ -16,11 +16,11 @@ def handleUsers():
         try:
             if request.method == 'POST':
                 data = request.json
-                affectedRows = UserDAO.createUser(data)
-                if (affectedRows == 0):
+                result = UserDAO.createUser(data)
+                if isinstance(result, User):  
                     return jsonify({'message': 'Operación POST exitosa'}), 201
                 else:
-                    return jsonify({'message': 'Error on insert'}), 400
+                    return jsonify({'message': 'Error desconocido'}), 500
             elif request.method == 'GET':
                 users = UserDAO.getUsers()
                 usersdetails_json = []

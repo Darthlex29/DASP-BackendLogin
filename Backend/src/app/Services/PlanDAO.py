@@ -1,5 +1,4 @@
 from ..Models import Plan
-from ..utils import getConnection
 from app import db
 
 class PlanDAO():
@@ -7,16 +6,10 @@ class PlanDAO():
     @classmethod
     def createPlan(self, data):
         try:
-            connection = getConnection()
-            with connection.cursor() as cursor:
-                affectedRows = cursor.rowcount
-
             nuevoPlan = Plan(**data)
-
             db.session.add(nuevoPlan)
             db.session.commit()
-            connection.close()
-            return affectedRows
+            return nuevoPlan
         except Exception as ex:
             print("error")
             return Exception(ex)
@@ -25,7 +18,6 @@ class PlanDAO():
     def getPlans(self):
         try:
             allPlans = Plan.query.all()
-
             plans = []
             for plan in allPlans:
                 planJson = plan.to_JSON()
@@ -40,7 +32,6 @@ class PlanDAO():
         try:
             plan = Plan.query.filter_by(id=id).first()
             if plan is not None:
-                #planJson = plan.to_JSON()
                 return plan
             else:
                 return None

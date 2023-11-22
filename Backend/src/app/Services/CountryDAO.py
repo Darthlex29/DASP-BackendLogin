@@ -1,4 +1,3 @@
-from ..utils import getConnection
 from ..Models import Country
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
@@ -8,16 +7,10 @@ class CountryDAO():
     @classmethod
     def createCountry(self, data):
         try:
-            connection = getConnection()
-            with connection.cursor() as cursor:
-                affectedRows = cursor.rowcount
-
             nuevoCountry = Country(**data)
-
             db.session.add(nuevoCountry)
             db.session.commit()
-            connection.close()
-            return affectedRows
+            return nuevoCountry
         except Exception as ex:
             print("error")
             return Exception(ex)
@@ -41,7 +34,6 @@ class CountryDAO():
         try:
             country = Country.query.filter_by(id=id).first()
             if country is not None:
-                #countryJson = country.to_JSON()
                 return country
             else:
                 return None

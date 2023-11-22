@@ -1,5 +1,4 @@
 from ..Models import Ticket
-from ..utils import getConnection
 from app import db
 
 class TicketDAO():
@@ -7,16 +6,10 @@ class TicketDAO():
     @classmethod
     def createTicket(self, data):
         try:
-            connection = getConnection()
-            with connection.cursor() as cursor:
-                affectedRows = cursor.rowcount
-
             nuevoTicket = Ticket(**data)
-
             db.session.add(nuevoTicket)
             db.session.commit()
-            connection.close()
-            return affectedRows
+            return nuevoTicket
         except Exception as ex:
             print("error")
             return Exception(ex)
@@ -40,7 +33,6 @@ class TicketDAO():
         try:
             ticket = Ticket.query.filter_by(id=id).first()
             if ticket is not None:
-                #ticketJson = ticket.to_JSON()
                 return ticket
             else:
                 return None

@@ -15,14 +15,11 @@ def handlePlatforms():
                 hasAccess = Security.verifyToken(request.headers, required_role=3)
                 if hasAccess:
                     data = request.json
-                    affectedRows = PlatformDAO.createPlatform(data)
-                    print(affectedRows)
-                    if (affectedRows == 0):
+                    result = PlatformDAO.createPlatform(data)
+                    if isinstance(result, Platform):  
                         return jsonify({'message': 'Operación POST exitosa'}), 201
                     else:
-                        return jsonify({'message': 'Error on insert'})
-                else: 
-                    return jsonify({'message': 'Unauthorized'}), 401
+                        return jsonify({'message': 'Error desconocido'}), 500
             elif request.method == 'GET':
                 hasAccess=Security.verifyToken(request.headers)
                 if hasAccess:

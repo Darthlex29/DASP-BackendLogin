@@ -1,4 +1,3 @@
-from ..utils import getConnection
 from ..Models import User
 from .CountryDAO import CountryDAO
 from .RolDAO import RolDAO
@@ -12,9 +11,7 @@ class UserDAO():
     @classmethod
     def getUsers(self):
         try:
-            connection = getConnection()
             users = User.query.all()
-            connection.close()
             return users
         except Exception as ex:
             print("error 001")
@@ -43,16 +40,11 @@ class UserDAO():
     @classmethod
     def create_User(self, data):
         try:
-            connection = getConnection()
-            with connection.cursor() as cursor:
-                affectedRows = cursor.rowcount
-            
             nuevoUser = User(**data)
 
             db.session.add(nuevoUser)
             db.session.commit()
-            connection.close()
-            return affectedRows
+            return nuevoUser
         except Exception as ex:
             print("error 004")
             return Exception(ex)
@@ -91,25 +83,15 @@ class UserDAO():
     @classmethod
     def createUser(self, data):
         try:
-            connection = getConnection()
             nuevoUser = User(**data)
-            print('entro1')
             
             if(nuevoUser.validateInformationByRol()):
-                print(data)
                 nuevoUser.hashPassword()
-                print('entro2')
-                #print(nuevoUser.password)
-                with connection.cursor() as cursor:
-                   affectedRows = cursor.rowcount
-
                 db.session.add(nuevoUser)
                 db.session.commit()
-                connection.close()
-                return affectedRows
+                return nuevoUser
             else: 
                 print("error 013")
-                connection.close()
                 return None
         except Exception as ex:
             print("error 008")

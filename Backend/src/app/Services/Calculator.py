@@ -2,7 +2,6 @@ from warnings import catch_warnings
 from ..Models import Distributor
 from .CategoryDAO import CategoryDAO
 from .DistributorDAO import DistributorDAO
-from ..utils import getConnection
 from app import db
 
 class Calculator():

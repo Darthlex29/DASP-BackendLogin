@@ -1,6 +1,5 @@
 from ..Models import Domain
 from .Verifications import Verifications
-from ..utils import getConnection
 from app import db
 
 class DomainDAO():
@@ -8,12 +7,6 @@ class DomainDAO():
     @classmethod
     def createDomain(self, data):
         try:
-        
-            connection = getConnection()
-            with connection.cursor() as cursor:
-                affectedRows = cursor.rowcount
-
-            # Verificar el Buyout pendiente del usuario actual
             verification_result = Verifications.VerificationBuyoutOfCurrentUser()
             print("Despues de la verificacion: ")
             print(verification_result)
@@ -25,11 +18,9 @@ class DomainDAO():
                 else:
                     nuevoDomain.buyout_id = verification_result     
             
-             # Agregar y confirmar cambios en la sesión de SQLAlchemy
-            #db.session.add(nuevoDomain)
-            #db.session.commit()
-            #connection.close()
-            return affectedRows
+            db.session.add(nuevoDomain)
+            db.session.commit()
+            return nuevoDomain
         except Exception as ex:
             print("error")
             return Exception(ex)
@@ -48,7 +39,6 @@ class DomainDAO():
         try:
             domain = Domain.query.filter_by(id=id).first()
             if domain is not None:
-                #domainJson = domain.to_JSON()
                 return domain
             else:
                 return None

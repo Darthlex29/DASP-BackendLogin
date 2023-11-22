@@ -1,4 +1,3 @@
-from ..utils import getConnection
 from ..Models import Rol
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
@@ -8,16 +7,10 @@ class RolDAO():
     @classmethod
     def createRol(self, data):
         try:
-            connection = getConnection()
-            with connection.cursor() as cursor:
-                affectedRows = cursor.rowcount
-
             nuevoRol = Rol(**data)
-
             db.session.add(nuevoRol)
             db.session.commit()
-            connection.close()
-            return affectedRows
+            return Rol
         except Exception or SQLAlchemyError as ex:
             print("error")
             return Exception(ex)
@@ -41,7 +34,6 @@ class RolDAO():
         try:
             rol = Rol.query.filter_by(id=id).first()
             if rol is not None:
-                #rolJson = rol.to_JSON()
                 return rol
             else:
                 return None

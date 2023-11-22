@@ -1,4 +1,3 @@
-from ..utils import getConnection
 from ..Models import Buyout
 from sqlalchemy.exc import SQLAlchemyError
 from app import db
@@ -11,15 +10,10 @@ class BuyoutDAO():
             user_id = data.get('user_id')
             existing_buyout = Buyout.query.filter_by(user_id=user_id).filter(Buyout.status == 'Pending').first()
             if not existing_buyout:
-                connection = getConnection()
-                with connection.cursor() as cursor:
-                    affectedRows = cursor.rowcount
-
                 nuevoBuyout = Buyout(**data)
                 db.session.add(nuevoBuyout)
                 db.session.commit()
-                connection.close()
-                return affectedRows
+                return nuevoBuyout
             else: 
                  return {'error': 'El usuario ya tiene un Buyout en estado Pending.'}
         except Exception as ex:
@@ -29,9 +23,7 @@ class BuyoutDAO():
     @classmethod
     def getBuyouts(self):
         try:
-            connection = getConnection()
             allBuyouts = Buyout.query.all()
-            connection.close()
             return allBuyouts
         except Exception as ex:
             print("error")

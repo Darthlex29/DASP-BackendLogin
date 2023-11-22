@@ -1,4 +1,3 @@
-from ..utils import getConnection
 from ..Models import User
 from app import db
 
