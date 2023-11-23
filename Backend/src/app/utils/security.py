@@ -1,4 +1,3 @@
-from decouple import config
 import pytz
 import datetime
 import jwt
@@ -6,7 +5,7 @@ from sqlalchemy import true
 
 class Security():
 
-    secret = config('JWT_KEY')
+    secret = "D5*F?_1?-d$f*1"
     tz = pytz.timezone("America/Bogota")
 
     @classmethod

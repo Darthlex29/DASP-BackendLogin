@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from config import config
+from config import finalConfig
 from flask_cors import CORS
 from .utils import loginManagerApp#, csrf
 
@@ -11,7 +11,7 @@ def createApp(config_name):
 
     CORS(app, resources={r"/*": {"origins": "*"}})
 
-    app.config.from_object(config[config_name])
+    app.config.from_object(finalConfig[config_name])
 
     db.init_app(app)
 

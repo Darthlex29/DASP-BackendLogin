@@ -23,6 +23,8 @@ env.bak/
 # IDE-specific
 .idea/
 
+.Dockerfile
+
 # Compiled Python files
 *.pyc
 # Ignore the virtual environment
