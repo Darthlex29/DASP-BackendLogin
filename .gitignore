@@ -11,8 +11,8 @@ venv/
 
 # Dependency directories
 __pycache__/
-venv/
-venv.bak/
+env/
+env.bak/
 *.pyc
 
 # Logs and databases
