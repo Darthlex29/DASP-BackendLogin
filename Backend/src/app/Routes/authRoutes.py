@@ -91,15 +91,16 @@ def login():
         #print(csrfToken)
         email = request.json.get('email')  
         password = request.json.get('password') 
+        print(email)
+        print(password)
         loggedUser = LoginService.login(email, password)
         if loggedUser is not None:
             if loggedUser.password is True:
                 login_user(loggedUser)
                 encodedToken = Security.generateToken(loggedUser)
                 print(encodedToken)
-                userCurrent = current_user
                 print("Contraseña correcta, usuario autenticado")
-                return jsonify({'mensaje': 'Inicio de sesión exitoso', 'Token':encodedToken, 'Rol':userCurrent.rol, 'Name':userCurrent.name}), 200
+                return jsonify({'mensaje': 'Inicio de sesión exitoso', 'Token':encodedToken, 'Name':current_user.name, 'Rol':current_user.rol_id}), 200
             else: 
                 flash("Contraseña incorrecta, no se pudo autenticar")
                 print("Contraseña incorrecta, no se pudo autenticar")
