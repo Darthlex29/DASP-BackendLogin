@@ -11,9 +11,11 @@ class Verifications():
         try: 
             user_id = current_user.id if current_user.is_authenticated else None
             # Verificar si el usuario tiene un Buyout en estado 'Pending'
+
             if user_id is not None:
                 existing_pending_buyout = Buyout.query.filter_by(user_id=user_id, status='Pending').first()
                 if not existing_pending_buyout:
+                    print('el usuario no tiene buyout')
                     data = {
                         "pay_plan_id": 1,
                         "status": "Pending",
@@ -22,11 +24,13 @@ class Verifications():
                     nuevoBuyout = Buyout(**data)
                     db.session.add(nuevoBuyout)
                     db.session.commit()
-                    return nuevoBuyout
+                    return nuevoBuyout.id
                 else: 
+                    print('Si hay un buyout')
                     return existing_pending_buyout.id  
             else: 
-                return {'error': 'No se encontró un usuario loggeado.'}, 401
+                print("No hay usuario loggeado")
+                return None
         except Exception as ex:
             print("error")
             return Exception(ex)

@@ -11,20 +11,22 @@ class HostingDAO():
             print("Despues de la verificacion: ")
             print(verification_result)
 
-            nuevoHosting = Hosting(**data)
             if verification_result is not None: 
-                if 'error' in verification_result:
-                    return verification_result
-                else:
-                    nuevoHosting.buyout_id = verification_result     
+                newBuyout = verification_result     
+            else:
+                return {'error': 'No se encontró un usuario loggeado.'}, 401
+            
+            nuevoHosting = Hosting(**data)
+
+            nuevoHosting.buyout_id = newBuyout
 
             db.session.add(nuevoHosting)
             db.session.commit()
             return nuevoHosting
         except Exception as ex:
-            print("error")
-            return Exception(ex)
-    
+            print("Error:", ex)
+            return {'error': 'Ocurrió un error al crear el dominio.'}, 500  # Devolver un código de estado 500
+        
     @classmethod
     def getHostings(self):
         try:

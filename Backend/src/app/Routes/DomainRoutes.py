@@ -16,7 +16,7 @@ def handleDomains():
             if hasAccess:
                 data = request.json
                 result = DomainDAO.createDomain(data)
-                if isinstance(result, domain):  
+                if isinstance(result, Domain):  
                     return jsonify({'message': 'Operación POST exitosa'}), 201
                 else:
                     return jsonify({'message': 'Error desconocido'}), 500
