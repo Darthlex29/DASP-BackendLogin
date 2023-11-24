@@ -20,6 +20,8 @@ def handleDistributors():
                     return jsonify({'message': 'Operación POST exitosa'}), 201
                 else:
                     return jsonify({'message': 'Error desconocido'}), 500
+            else:
+                    return jsonify({'message': 'Unauthorized'}), 401
         elif request.method == 'GET':
                 distributors = DistributorDAO.getDistributors()
                 return jsonify(distributors), 200
