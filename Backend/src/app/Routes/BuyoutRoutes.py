@@ -52,7 +52,7 @@ def handleBuyouts():
 
 @buyoutsMain.route('/buyout/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 def handleBuyoutById(id):
-    hasAccess = Security.verifyToken(request.headers, required_role=1)
+    hasAccess = Security.verifyToken(request.headers)
     if hasAccess:
         try:
             if request.method == 'GET':

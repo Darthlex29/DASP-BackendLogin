@@ -1,21 +1,35 @@
 from flask_login import current_user
 from ..Models import Buyout, Domain, Hosting
+from .BuyoutDAO import BuyoutDAO
+from app import db
 
 class Verifications():
     
     @classmethod
     def VerificationBuyoutOfCurrentUser(self):
         # Obtener el ID del usuario loggeado
-        user_id = current_user.id if current_user.is_authenticated else None
-        # Verificar si el usuario tiene un Buyout en estado 'Pending'
-        if user_id is not None:
-            existing_pending_buyout = Buyout.query.filter_by(user_id=user_id, status='Pending').first()
-            if not existing_pending_buyout:
-                return None
+        try: 
+            user_id = current_user.id if current_user.is_authenticated else None
+            # Verificar si el usuario tiene un Buyout en estado 'Pending'
+            if user_id is not None:
+                existing_pending_buyout = Buyout.query.filter_by(user_id=user_id, status='Pending').first()
+                if not existing_pending_buyout:
+                    data = {
+                        "pay_plan_id": 1,
+                        "status": "Pending",
+                        "user_id": user_id
+                    }
+                    nuevoBuyout = Buyout(**data)
+                    db.session.add(nuevoBuyout)
+                    db.session.commit()
+                    return nuevoBuyout
+                else: 
+                    return existing_pending_buyout.id  
             else: 
-                return existing_pending_buyout.id  
-        else: 
-            return {'error': 'No se encontró un usuario loggeado.'}, 401
+                return {'error': 'No se encontró un usuario loggeado.'}, 401
+        except Exception as ex:
+            print("error")
+            return Exception(ex)
         
     @classmethod
     def getBuyoutsOfCurrentUser(self):

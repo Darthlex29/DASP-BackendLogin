@@ -17,7 +17,7 @@ class DomainDAO():
                     return verification_result
                 else:
                     nuevoDomain.buyout_id = verification_result     
-            
+
             db.session.add(nuevoDomain)
             db.session.commit()
             return nuevoDomain
