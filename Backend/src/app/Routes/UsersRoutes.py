@@ -12,7 +12,6 @@ def index():
 @userMain.route('/users/', methods=['GET', 'POST'])
 def handleUsers():
     hasAccess=Security.verifyToken(request.headers)
-    hasAccess=True
     if hasAccess: 
         try:
             if request.method == 'POST':

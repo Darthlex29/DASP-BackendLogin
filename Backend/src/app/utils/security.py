@@ -14,7 +14,7 @@ class Security():
         print(authenticated_user.rol_id)
         payload = {
             'iat':datetime.datetime.now(tz=cls.tz),
-            'exp':datetime.datetime.now(tz=cls.tz) + datetime.timedelta(minutes=100),
+            'exp':datetime.datetime.now(tz=cls.tz) + datetime.timedelta(minutes=1000),
             'email': authenticated_user.email,
             'name': authenticated_user.name,
             'rol_id':authenticated_user.rol_id
