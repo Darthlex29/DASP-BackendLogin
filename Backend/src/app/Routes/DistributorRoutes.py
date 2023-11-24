@@ -12,7 +12,7 @@ def handleDistributors():
     try:
         print(request.method)
         if request.method == 'POST':
-            hasAccess = Security.verifyToken(request.headers, required_role=4)
+            hasAccess = Security.verifyToken(request.headers, required_role=3)
             if hasAccess:
                 data = request.json
                 result = DistributorDAO.createDistributor(data)
@@ -45,7 +45,7 @@ def handleDistributorById(id):
             else:
                 return jsonify({'message': 'Distributor no encontrado'}), 404
         elif request.method == 'PUT':
-            hasAccess = Security.verifyToken(request.headers, required_role=4)
+            hasAccess = Security.verifyToken(request.headers, required_role=3)
             if hasAccess:
                 data = request.json
                 print(data)
@@ -57,7 +57,7 @@ def handleDistributorById(id):
             else: 
                 return jsonify({'message': 'Unauthorized'}), 401
         elif request.method == 'DELETE':
-            hasAccess = Security.verifyToken(request.headers, required_role=4)
+            hasAccess = Security.verifyToken(request.headers, required_role=3)
             if hasAccess:
                 distributor = DistributorDAO.getDistributorById(id)
                 if distributor is not None:
