@@ -9,37 +9,38 @@ domainsMain = Blueprint('domainBlueprint', __name__)
 
 @domainsMain.route('/domains/', methods=['GET', 'POST'])
 def handleDomains():
-    hasAccess=Security.verifyToken(request.headers)
-    if hasAccess:
-        try:
-            print(request.method)
-            if request.method == 'POST':
+    try:
+        print(request.method)
+        if request.method == 'POST':
+            hasAccess=Security.verifyToken(request.headers)
+            if hasAccess:
                 data = request.json
                 result = DomainDAO.createDomain(data)
                 if isinstance(result, domain):  
                     return jsonify({'message': 'Operación POST exitosa'}), 201
                 else:
                     return jsonify({'message': 'Error desconocido'}), 500
-            elif request.method == 'GET':
-                domains = Verifications.getDomainsOfCurrentUser()
-                if domains is None:
-                    domains = DomainDAO.getDomains()
-                totalInfoDomains = []
-                for domain in domains:
-                    domainJson = domain.to_JSON()
-                    Distributor = DomainDAO.getDomainsDistributors(domain)
-                    domainDistributor = Distributor.to_JSON()
-                    commission = Calculator.calcular_comision(domain)
-                    totalInfoDomains.append({
-                        'domain' : domainJson,
-                        'domainDistributor' : domainDistributor,
-                        'commission' : commission 
-                    })
-                return jsonify(totalInfoDomains), 200
-        except Exception as ex:
-            return jsonify({'message': str(ex)}), 500
-    else: 
-        return jsonify({'message': 'Unauthorized'}), 401
+            else: 
+                return jsonify({'message': 'Unauthorized'}), 401
+        elif request.method == 'GET':
+            domains = Verifications.getDomainsOfCurrentUser()
+            if domains is None:
+                domains = DomainDAO.getDomains()
+            totalInfoDomains = []
+            for domain in domains:
+                domainJson = domain.to_JSON()
+                Distributor = DomainDAO.getDomainsDistributors(domain)
+                domainDistributor = Distributor.to_JSON()
+                commission = Calculator.calcular_comision(domain)
+                totalInfoDomains.append({
+                    'domain' : domainJson,
+                    'domainDistributor' : domainDistributor,
+                    'commission' : commission 
+                })
+            return jsonify(totalInfoDomains), 200
+    except Exception as ex:
+        return jsonify({'message': str(ex)}), 500
+    
 
 
 @domainsMain.route('/domain/<int:id>', methods=['GET', 'PUT', 'DELETE'])

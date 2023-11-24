@@ -92,7 +92,7 @@ class User(db.Model, UserMixin):
             return True
         elif not self.rol_id:
             self.rol_id = 1
-            return False
+            return True
         else:
             self.rol_id = 1
             return True
