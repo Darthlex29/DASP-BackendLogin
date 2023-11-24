@@ -21,7 +21,7 @@ def handleCountries():
                     else:
                         return jsonify({'message': 'Error desconocido'}), 500
             elif request.method == 'GET':
-                countries = CountryDAO.getCountries()
+                countries = CountryDAO.getCountrys()
                 return jsonify(countries), 200
         except Exception as ex:
             return jsonify({'message': str(ex)}), 500
