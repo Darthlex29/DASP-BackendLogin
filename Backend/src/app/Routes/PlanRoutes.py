@@ -9,22 +9,22 @@ plansMain = Blueprint('planBlueprint', __name__)
 
 @plansMain.route('/plans/', methods=['GET', 'POST'])
 def handlePlans():
-        try:
-            print(request.method)
-            if request.method == 'POST':
-                hasAccess = Security.verifyToken(request.headers, required_role=3)
-                if hasAccess:
-                    data = request.json
-                    result = PlanDAO.createPlan(data)
-                    if isinstance(result, Plan):  
-                        return jsonify({'message': 'Operación POST exitosa'}), 201
-                    else:
-                        return jsonify({'message': 'Error desconocido'}), 500
-            elif request.method == 'GET':
-                plans = PlanDAO.getPlans()
-                return jsonify(plans), 200
-        except Exception as ex:
-            return jsonify({'message': str(ex)}), 500
+    try:
+        print(request.method)
+        if request.method == 'POST':
+            hasAccess = Security.verifyToken(request.headers, required_role=3)
+            if hasAccess:
+                data = request.json
+                result = PlanDAO.createPlan(data)
+                if isinstance(result, Plan):  
+                    return jsonify({'message': 'Operación POST exitosa'}), 201
+                else:
+                    return jsonify({'message': 'Error desconocido'}), 500
+        elif request.method == 'GET':
+            plans = PlanDAO.getPlans()
+            return jsonify(plans), 200
+    except Exception as ex:
+        return jsonify({'message': str(ex)}), 500
 
 
 @plansMain.route('/plan/<int:id>', methods=['GET', 'PUT', 'DELETE'])
@@ -59,7 +59,6 @@ def handlePlanById(id):
             if hasAccess:
                 plan = PlanDAO.getPlanById(id)
                 if plan is not None:
-                    # Llama a la función que elimina al plan
                     is_deleted = PlanDAO.deletePlan(id)
                     if is_deleted:
                         return jsonify({'message': 'Plan eliminado con éxito'}), 200

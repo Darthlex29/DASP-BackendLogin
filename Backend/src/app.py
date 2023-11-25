@@ -1,4 +1,7 @@
 from app import createApp, db
+
+app = createApp('development')
+
 from app.Routes.UsersRoutes import userMain
 from app.Routes.authRoutes import authMain
 from app.Routes.TicketsRoutes import ticketsMain
@@ -13,8 +16,6 @@ from app.Routes.PayPlanRoutes import payPlansMain
 from app.Routes.PlanRoutes import plansMain
 from app.Routes.PlatformRoutes import platformsMain
 from app.Routes.RolRoutes import rolsMain
-
-app = createApp('development')
 
 app.register_blueprint(userMain)
 app.register_blueprint(authMain)

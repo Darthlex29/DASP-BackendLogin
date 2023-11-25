@@ -32,10 +32,6 @@ def verification():
 @loginManagerApp.user_loader
 def loadUser(id):
     user = UserDAO.getUserByID(id)
-    if isinstance(user, User):
-        print(user.name)
-    else:
-        print("No esta retornando un objeto")
     return user
 
 @authMain.route('/create/', methods=['GET','POST'])
@@ -96,10 +92,11 @@ def login():
         loggedUser = LoginService.login(email, password)
         if loggedUser is not None:
             if loggedUser.password is True:
-                login_user(loggedUser)
+                login_user(loggedUser, remember=True)
                 encodedToken = Security.generateToken(loggedUser)
                 print(encodedToken)
                 print("Contraseña correcta, usuario autenticado")
+                #session.set_permanent("current_user", user)
                 return jsonify({'mensaje': 'Inicio de sesión exitoso', 'Token':encodedToken, 'Name':current_user.name, 'Rol':current_user.rol_id}), 200
             else: 
                 flash("Contraseña incorrecta, no se pudo autenticar")
@@ -115,7 +112,7 @@ def login():
     else:
         return jsonify({'message': 'Method Not Allowed'}), 405
 
-@authMain.route('/logout', methods=['GET', 'POST'])
+@authMain.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('authBlueprint.login'))
