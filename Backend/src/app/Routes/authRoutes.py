@@ -20,6 +20,7 @@ def home():
         print(current_user.is_authenticated)
     else:
         print("current_user is not a User object")
+    
     return render_template('home.html')
 
 @authMain.route('/ver/')
@@ -96,19 +97,21 @@ def login():
                 encodedToken = Security.generateToken(loggedUser)
                 print(encodedToken)
                 print("Contraseña correcta, usuario autenticado")
+                #loginManagerApp._set_cookie(loggedUser)
                 #session.set_permanent("current_user", user)
-                return jsonify({'mensaje': 'Inicio de sesión exitoso', 'Token':encodedToken, 'Name':current_user.name, 'Rol':current_user.rol_id}), 200
+                return jsonify({'mensaje': 'Inicio de sesión exitoso', 'Token':encodedToken, 'Name':current_user.name, 'Rol':current_user.rol_id, 'id':current_user.id}), 200
             else: 
                 flash("Contraseña incorrecta, no se pudo autenticar")
                 print("Contraseña incorrecta, no se pudo autenticar")
-                return jsonify({'mensaje': 'Error de autenticación: contraseña incorrecta'}), 401
+                return redirect(url_for("authBlueprint.home"))
+                #return jsonify({'mensaje': 'Error de autenticación: contraseña incorrecta'}), 401
                 
         else:
             flash("Usuario no encontrado...")
             print("El usuario no existe")
-            return jsonify({'message': 'Usuario no encontrado'}), 404
+            #return jsonify({'message': 'Usuario no encontrado'}), 404
         
-        
+        return render_template('auth/login.html')
     else:
         return jsonify({'message': 'Method Not Allowed'}), 405
 
@@ -141,6 +144,4 @@ def loginInUser():
             return jsonify({'message': 'Usuario no encontrado'}), 404
     else:
         return jsonify({'message': 'Method Not Allowed'}), 405
-    
-    
     

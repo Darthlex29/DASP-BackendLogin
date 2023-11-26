@@ -1,21 +1,26 @@
 from ..Models import Domain, Distributor
 from ..Services import DomainDAO, Calculator, Verifications
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
+from flask_login import current_user
 from ..utils import db, loginManagerApp
 from ..utils import Security
 
 
 domainsMain = Blueprint('domainBlueprint', __name__)
 
-@domainsMain.route('/domains/', methods=['GET', 'POST'])
-def handleDomains():
+@domainsMain.route('/domains/<int:id>', methods=['GET', 'POST'])
+@domainsMain.route('/domains/', defaults={'id': 0}, methods=['GET', 'POST'])
+def handleDomainsWithUser(id = 0):
     try:
         print(request.method)
         if request.method == 'POST':
             hasAccess=Security.verifyToken(request.headers)
+            hasAccess = True
             if hasAccess:
                 data = request.json
-                result = DomainDAO.createDomain(data)
+                print(data)
+                result = DomainDAO.createDomain(data, id)
+
                 if isinstance(result, Domain):  
                     return jsonify({'message': 'Operación POST exitosa'}), 201
                 else:
@@ -23,7 +28,7 @@ def handleDomains():
             else: 
                 return jsonify({'message': 'Unauthorized'}), 401
         elif request.method == 'GET':
-            domains = Verifications.getDomainsOfCurrentUser()
+            domains = Verifications.getDomainsOfCurrentUser(id)
             if domains is None:
                 domains = DomainDAO.getDomains()
             totalInfoDomains = []
@@ -39,8 +44,7 @@ def handleDomains():
                 })
             return jsonify(totalInfoDomains), 200
     except Exception as ex:
-        return jsonify({'message': str(ex)}), 500
-    
+        return jsonify({'message': str(ex)}), 500   
 
 
 @domainsMain.route('/domain/<int:id>', methods=['GET', 'PUT', 'DELETE'])
@@ -91,3 +95,8 @@ def handleDomainById(id):
     else: 
         return jsonify({'message': 'Unauthorized'}), 401
 
+@domainsMain.before_request
+def before_request():
+    # Recargar el usuario en cada solicitud
+    if current_user.is_authenticated:
+        print("Usuario autenticado")

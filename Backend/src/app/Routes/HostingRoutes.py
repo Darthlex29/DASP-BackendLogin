@@ -1,26 +1,28 @@
 from ..Models import Hosting
 from ..Services import HostingDAO, Verifications
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, url_for
+from flask_login import current_user
 from ..utils import db, loginManagerApp
 from ..utils import Security
 
 hostingsMain = Blueprint('hostingBlueprint', __name__)
 
-@hostingsMain.route('/hostings/', methods=['GET', 'POST'])
-def handleHostings():
+@hostingsMain.route('/hostings/<int:id>', methods=['GET', 'POST'])
+@hostingsMain.route('/hostings/', defaults={'id': 0}, methods=['GET', 'POST'])
+def handleHostings(id = 0):
     hasAccess = Security.verifyToken(request.headers)
     if hasAccess:
         try:
             print(request.method)
             if request.method == 'POST':
                 data = request.json
-                result = HostingDAO.createHosting(data)
+                result = HostingDAO.createHosting(data, id)
                 if isinstance(result, Hosting):  
                     return jsonify({'message': 'Operación POST exitosa'}), 201
                 else:
                     return jsonify({'message': 'Error desconocido'}), 500
             elif request.method == 'GET':
-                hostings = Verifications.getHostingsOfCurrentUser()
+                hostings = Verifications.getHostingsOfCurrentUser(id)
                 if hostings is None:
                     hostings = HostingDAO.getHostings()
                 totalInfoHostings = []
@@ -83,3 +85,8 @@ def handleHostingById(id):
     else: 
         return jsonify({'message': 'Unauthorized'}), 401
 
+@hostingsMain.before_request
+def before_request():
+    # Recargar el usuario en cada solicitud
+    if current_user.is_authenticated:
+        print("Usuario autenticado")

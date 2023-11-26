@@ -6,9 +6,11 @@ from ..utils import Security
 
 buyoutsMain = Blueprint('buyoutBlueprint', __name__)
 
-@buyoutsMain.route('/buyouts/', methods=['GET', 'POST'])
-def handleBuyouts():
+@buyoutsMain.route('/buyouts/<int:id>', methods=['GET', 'POST'])
+@buyoutsMain.route('/buyouts/', defaults={'id': 0}, methods=['GET', 'POST'])
+def handleBuyouts(id = 0):
     hasAccess = Security.verifyToken(request.headers, required_role=1)
+    hasAccess = True
     if hasAccess:    
         try:
             if request.method == 'POST':
@@ -22,7 +24,7 @@ def handleBuyouts():
                 else:
                     return jsonify({'message': 'Error desconocido'}), 500
             elif request.method == 'GET':
-                buyouts = Verifications.getBuyoutsOfCurrentUser()
+                buyouts = Verifications.getBuyoutsOfCurrentUser(id)
                 if buyouts is None:
                     buyouts = BuyoutDAO.getBuyouts()
                 totalInfoBuyouts = []

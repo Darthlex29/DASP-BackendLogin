@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, session
 from flask_sqlalchemy import SQLAlchemy
 from .utils import finalConfig
 from flask_cors import CORS
@@ -14,6 +14,7 @@ def createApp(config_name):
     app.config.from_object(finalConfig[config_name])
 
     db.init_app(app)
+    
 
     loginManagerApp.init_app(app)
 
