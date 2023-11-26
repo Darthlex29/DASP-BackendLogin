@@ -44,7 +44,7 @@ def handleTicketById(id):
             else:
                 return jsonify({'message': 'Ticket no encontrado'}), 404
         elif request.method == 'PUT':
-            hasAccess = Security.verifyToken(request.headers, required_role=3)
+            hasAccess = Security.verifyToken(request.headers, required_role=2)
             if hasAccess:
                 data = request.json
                 print(data)
