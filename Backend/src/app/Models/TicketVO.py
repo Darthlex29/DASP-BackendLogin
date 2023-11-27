@@ -14,7 +14,7 @@ class Ticket(db.Model):
     user = db.relationship('User', foreign_keys=[user_id], backref='created_tickets', lazy=True)
     user_it = db.relationship('User', foreign_keys=[user_it_id], backref='assigned_tickets', lazy=True)
 
-    def __init__(self, description, message, state, priority, user_id, user_it_id = None):
+    def __init__(self, description, message, servicios, state, priority, user_id, user_it_id = None):
         self.description = description
         self.message = message
         self.state = state

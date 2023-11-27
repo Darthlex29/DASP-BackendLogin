@@ -14,7 +14,7 @@ class UserDAO():
             users = User.query.all()
             return users
         except Exception as ex:
-            print("error 001")
+            print(f"Error: {ex}")
             raise Exception(ex)
 
     # Obtener la un usuario por un id 
@@ -24,7 +24,7 @@ class UserDAO():
             user = User.query.filter_by(id=id).first()
             return user
         except Exception as ex:
-            print("error 002")
+            print(f"Error: {ex}")
             raise Exception(ex)
 
     @classmethod
@@ -33,7 +33,7 @@ class UserDAO():
             user = User.query.filter_by(email=email).first()
             return user
         except Exception as ex:
-            print("error 003")
+            print(f"Error: {ex}")
             raise Exception(ex)
 
     # Crear User sin el hash
@@ -46,7 +46,7 @@ class UserDAO():
             db.session.commit()
             return nuevoUser
         except Exception as ex:
-            print("error 004")
+            print(f"Error: {ex}")
             return Exception(ex)
 
     # Clase que actualiza el usuario
@@ -64,7 +64,7 @@ class UserDAO():
             else:
                 return False
         except Exception as ex:
-            print("error 005")
+            print(f"Error: {ex}")
             raise Exception(ex)
 
     # Clase que elimina el usuario
@@ -76,7 +76,7 @@ class UserDAO():
             db.session.commit()
             return user
         except Exception as ex:
-            print("error 006")
+            print(f"Error: {ex}")
             return Exception(ex)
 
     # Crearte user con el hash
@@ -94,7 +94,7 @@ class UserDAO():
                 print("error 013")
                 return None
         except Exception as ex:
-            print("error 008")
+            print(f"Error: {ex}")
             return Exception(ex)
 
     @classmethod
@@ -113,6 +113,7 @@ class UserDAO():
 
             return countryJson, rolJson, payModeJson
         except Exception as ex: 
+            print(f"Error: {ex}")
             return (f"Error 014: {ex}")
         
     @classmethod

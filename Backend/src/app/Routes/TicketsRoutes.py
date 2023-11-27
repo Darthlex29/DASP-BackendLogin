@@ -11,9 +11,11 @@ def handleTickets():
     try:
         print(request.method)
         if request.method == 'POST':
+            
             hasAccess=Security.verifyToken(request.headers)
             if hasAccess:
                 data = request.json
+                print(data)
                 result = TicketDAO.createTicket(data)
                 if isinstance(result, Ticket):  
                     return jsonify({'message': 'Operación POST exitosa'}), 201

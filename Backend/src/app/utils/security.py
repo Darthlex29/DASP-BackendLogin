@@ -33,9 +33,11 @@ class Security():
                 user_role = payload.get('rol_id')
 
                 # Permitir acceso si el usuario tiene el rol 3 (o si no se especifica un rol requerido)
-                if user_role == 3 or (required_role is not None and user_role == required_role):
+                if user_role == 3 or (required_role is None or user_role == required_role):
+                    print("Hay acceso")
                     return True
-
+                
+                print(f"Usuario no autorizado para realizar esta acción. Se requiere el rol: {required_role}")
                 error_message = f"Usuario no autorizado para realizar esta acción. Se requiere el rol: {required_role}"
                 abort(403, description=error_message)
                 return False

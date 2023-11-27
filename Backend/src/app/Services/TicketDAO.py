@@ -11,7 +11,7 @@ class TicketDAO():
             db.session.commit()
             return nuevoTicket
         except Exception as ex:
-            print("error")
+            print(f"Error: {ex}")
             return Exception(ex)
     
     @classmethod
@@ -25,7 +25,7 @@ class TicketDAO():
                 tickets.append(ticketJson)
             return tickets
         except Exception as ex:
-            print("error")
+            print(f"Error: {ex}")
             raise Exception(ex)
 
     @classmethod
@@ -37,7 +37,7 @@ class TicketDAO():
             else:
                 return None
         except Exception as ex:
-            print("error 404")
+            print(f"Error: {ex}")
             raise Exception(ex)
     
     @classmethod
@@ -52,7 +52,7 @@ class TicketDAO():
             else:
                 return False
         except Exception as ex:
-            print("error 404")
+            print(f"Error: {ex}")
             raise Exception(ex)
         
     @classmethod
@@ -63,5 +63,5 @@ class TicketDAO():
             db.session.commit()
             return ticket
         except Exception as ex:
-            print("error")
+            print(f"Error: {ex}")
             return Exception(ex)
