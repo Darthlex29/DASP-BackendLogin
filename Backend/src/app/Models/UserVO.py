@@ -6,6 +6,7 @@ from app import db
 
 
 class User(db.Model, UserMixin):
+    
     __tablename__ = 'User'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(80))
@@ -16,7 +17,6 @@ class User(db.Model, UserMixin):
     document_type = db.Column(db.String(80))
     jobTittle = db.Column(db.String(80), nullable=True)
     direction = db.Column(db.String(120))
-    creditCard = db.Column(db.String(16), unique=True, nullable=True)
     rol_id = db.Column(db.Integer, db.ForeignKey('Rol.id'))
     country_id = db.Column(db.Integer, db.ForeignKey('Country.id'))
     payMode_id = db.Column(db.Integer, db.ForeignKey('PayMode.id'), nullable=True)
@@ -25,10 +25,11 @@ class User(db.Model, UserMixin):
     payMode = db.relationship('PayMode', backref='user')
     rol = db.relationship('Rol', backref='user')
     buyouts = db.relationship('Buyout', backref='user', lazy=True)
+    creditcards = db.relationship('CreditCard', backref='user', lazy=True)
 
     def __init__(self, name, email, password, phone, idDocument, document_type,
                  country_id, jobTittle=None, direction=None, payMode_id=None,
-                 creditCard=None, rol_id=None):
+                 rol_id=None):
         self.name = name
         self.email = email
         self.password = password
@@ -39,7 +40,6 @@ class User(db.Model, UserMixin):
         self.jobTittle = jobTittle
         self.direction = direction
         self.payMode_id = payMode_id
-        self.creditCard = creditCard
         self.rol_id = rol_id
 
     def to_JSON(self):
@@ -56,7 +56,6 @@ class User(db.Model, UserMixin):
                 'jobTittle': self.jobTittle,
                 'direction': self.direction,
                 'payMode_id': self.payMode_id,
-                'creditCard': self.creditCard,
                 'rol_id': self.rol_id,
                 'password':self.password
             }
@@ -65,7 +64,7 @@ class User(db.Model, UserMixin):
 
     def from_JSON(self, data):
         for field in ['name', 'email', 'password', 'phone', 'idDocument', 'document_type',
-                      'country_id', 'jobTittle', 'direction', 'payMode_id', 'creditCard', 'rol_id']:
+                      'country_id', 'jobTittle', 'direction', 'payMode_id', 'rol_id']:
             if field in data:
                 setattr(self, field, data[field])
 

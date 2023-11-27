@@ -7,7 +7,7 @@ class DomainDAO():
     @classmethod
     def createDomain(self, data, id):
         try:
-            verification_result = Verifications.VerificationBuyoutOfCurrentUser(id)
+            verification_result = Verifications.verificationBuyoutOfCurrentUser(id)
             print("Despues de la verificacion: ")
             print(verification_result)
 

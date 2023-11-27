@@ -6,7 +6,7 @@ class Domain(db.Model):
     name = db.Column(db.String(100), nullable=False)
     costDomain = db.Column(db.Integer)
     distributor_id = db.Column(db.Integer, db.ForeignKey('Distributor.id'))
-    buyout_id = db.Column(db.Integer, db.ForeignKey('Buyout.id'))  # Nueva columna
+    buyout_id = db.Column(db.Integer, db.ForeignKey('Buyout.id'))  
 
     # Agregando la relación con Distributor
     distributors = db.relationship('Distributor', backref='domains', lazy=True)

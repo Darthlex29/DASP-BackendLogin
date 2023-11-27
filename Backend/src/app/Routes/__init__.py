@@ -19,6 +19,7 @@ from . import PlanRoutes
 from . import PayPlanRoutes
 from . import PlatformRoutes
 from . import RolRoutes
+from . import CreditCardRoute
 
 
 # Agrega las rutas al Blueprint

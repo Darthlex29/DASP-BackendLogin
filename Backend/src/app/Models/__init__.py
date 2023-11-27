@@ -11,3 +11,4 @@ from .PayPlanVO import PayPlan
 from .PlanVO import Plan
 from .PlataformVO import Platform
 from .RolVO import Rol
+from .CreditCardVO import CreditCard

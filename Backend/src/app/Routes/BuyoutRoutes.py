@@ -24,7 +24,7 @@ def handleBuyouts(id = 0):
                 else:
                     return jsonify({'message': 'Error desconocido'}), 500
             elif request.method == 'GET':
-                buyouts = Verifications.getBuyoutsOfCurrentUser(id)
+                buyouts = Verifications.get_itemsOfCurrentUser(id, 'Buyout')
                 if buyouts is None:
                     buyouts = BuyoutDAO.getBuyouts()
                 totalInfoBuyouts = []
