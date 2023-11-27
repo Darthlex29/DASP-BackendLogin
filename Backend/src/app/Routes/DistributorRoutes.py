@@ -23,8 +23,8 @@ def handleDistributors():
             else:
                     return jsonify({'message': 'Unauthorized'}), 401
         elif request.method == 'GET':
-                distributors = DistributorDAO.getDistributors()
-                return jsonify(distributors), 200
+            distributors = DistributorDAO.getDistributors()
+            return jsonify(distributors), 200
     except Exception as ex:
         return jsonify({'message': str(ex)}), 500
 

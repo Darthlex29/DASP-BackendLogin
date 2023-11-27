@@ -9,22 +9,22 @@ payPlansMain = Blueprint('payPlanBlueprint', __name__)
 
 @payPlansMain.route('/payPlans/', methods=['GET', 'POST'])
 def handlePayPlans():
-        try:
-            print(request.method)
-            if request.method == 'POST':
-                hasAccess = Security.verifyToken(request.headers, required_role=3)
-                if hasAccess:
-                    data = request.json
-                    result = PayPlanDAO.createPayPlan(data)
-                    if isinstance(result, PayPlan):  
-                        return jsonify({'message': 'Operación POST exitosa'}), 201
-                    else:
-                        return jsonify({'message': 'Error desconocido'}), 500
-            elif request.method == 'GET':
-                payPlans = PayPlanDAO.getPayPlans()
-                return jsonify(payPlans), 200
-        except Exception as ex:
-            return jsonify({'message': str(ex)}), 500
+    try:
+        print(request.method)
+        if request.method == 'POST':
+            hasAccess = Security.verifyToken(request.headers, required_role=3)
+            if hasAccess:
+                data = request.json
+                result = PayPlanDAO.createPayPlan(data)
+                if isinstance(result, PayPlan):  
+                    return jsonify({'message': 'Operación POST exitosa'}), 201
+                else:
+                    return jsonify({'message': 'Error desconocido'}), 500
+        elif request.method == 'GET':
+            payPlans = PayPlanDAO.getPayPlans()
+            return jsonify(payPlans), 200
+    except Exception as ex:
+        return jsonify({'message': str(ex)}), 500
 
 
 @payPlansMain.route('/payPlan/<int:id>', methods=['GET', 'PUT', 'DELETE'])

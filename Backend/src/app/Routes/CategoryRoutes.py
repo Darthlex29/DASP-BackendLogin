@@ -9,26 +9,22 @@ categoriesMain = Blueprint('categoryBlueprint', __name__)
 
 @categoriesMain.route('/categories/', methods=['GET', 'POST'])
 def handleCategories():
-        try:
-            print(request.method)
-            if request.method == 'POST':
-                hasAccess = Security.verifyToken(request.headers, required_role=3)
-                if hasAccess:
-                    data = request.json
-                    result = CategoryDAO.createCategory(data)
-                    if isinstance(result, Category):  
-                        return jsonify({'message': 'Operación POST exitosa'}), 201
-                    else:
-                        return jsonify({'message': 'Error desconocido'}), 500
-            elif request.method == 'GET':
-                hasAccess=Security.verifyToken(request.headers)
-                if hasAccess:
-                    categories = CategoryDAO.getCategories()
-                    return jsonify(categories), 200
-                else: 
-                    return jsonify({'message': 'Unauthorized'}), 401
-        except Exception as ex:
-            return jsonify({'message': str(ex)}), 500
+    try:
+        print(request.method)
+        if request.method == 'POST':
+            hasAccess = Security.verifyToken(request.headers, required_role=3)
+            if hasAccess:
+                data = request.json
+                result = CategoryDAO.createCategory(data)
+                if isinstance(result, Category):  
+                    return jsonify({'message': 'Operación POST exitosa'}), 201
+                else:
+                    return jsonify({'message': 'Error desconocido'}), 500
+        elif request.method == 'GET':
+            categories = CategoryDAO.getCategories()
+            return jsonify(categories), 200
+    except Exception as ex:
+        return jsonify({'message': str(ex)}), 500
 
 
 @categoriesMain.route('/category/<int:id>', methods=['GET', 'PUT', 'DELETE'])

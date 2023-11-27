@@ -9,22 +9,22 @@ payModesMain = Blueprint('payModeBlueprint', __name__)
 
 @payModesMain.route('/payModes/', methods=['GET', 'POST'])
 def handlePayModes():
-        try:
-            print(request.method)
-            if request.method == 'POST':
-                hasAccess = Security.verifyToken(request.headers, required_role=3)
-                if hasAccess:
-                    data = request.json
-                    result = PayModeDAO.createPayMode(data)
-                    if isinstance(result, PayMode):  
-                        return jsonify({'message': 'Operación POST exitosa'}), 201
-                    else:
-                        return jsonify({'message': 'Error desconocido'}), 500
-            elif request.method == 'GET':
-                payModes = PayModeDAO.getPayModes()
-                return jsonify(payModes), 200
-        except Exception as ex:
-            return jsonify({'message': str(ex)}), 500
+    try:
+        print(request.method)
+        if request.method == 'POST':
+            hasAccess = Security.verifyToken(request.headers, required_role=3)
+            if hasAccess:
+                data = request.json
+                result = PayModeDAO.createPayMode(data)
+                if isinstance(result, PayMode):  
+                    return jsonify({'message': 'Operación POST exitosa'}), 201
+                else:
+                    return jsonify({'message': 'Error desconocido'}), 500
+        elif request.method == 'GET':
+            payModes = PayModeDAO.getPayModes()
+            return jsonify(payModes), 200
+    except Exception as ex:
+        return jsonify({'message': str(ex)}), 500
 
 
 @payModesMain.route('/payMode/<int:id>', methods=['GET', 'PUT', 'DELETE'])

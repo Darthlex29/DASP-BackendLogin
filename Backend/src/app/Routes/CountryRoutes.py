@@ -9,22 +9,22 @@ countriesMain = Blueprint('countryBlueprint', __name__)
 
 @countriesMain.route('/countries/', methods=['GET', 'POST'])
 def handleCountries():
-        try:
-            print(request.method)
-            if request.method == 'POST':
-                hasAccess = Security.verifyToken(request.headers, required_role=3)
-                if hasAccess:
-                    data = request.json
-                    result = CountryDAO.createCountry(data)
-                    if isinstance(result, Country):  
-                        return jsonify({'message': 'Operación POST exitosa'}), 201
-                    else:
-                        return jsonify({'message': 'Error desconocido'}), 500
-            elif request.method == 'GET':
-                countries = CountryDAO.getCountrys()
-                return jsonify(countries), 200
-        except Exception as ex:
-            return jsonify({'message': str(ex)}), 500
+    try:
+        print(request.method)
+        if request.method == 'POST':
+            hasAccess = Security.verifyToken(request.headers, required_role=3)
+            if hasAccess:
+                data = request.json
+                result = CountryDAO.createCountry(data)
+                if isinstance(result, Country):  
+                    return jsonify({'message': 'Operación POST exitosa'}), 201
+                else:
+                    return jsonify({'message': 'Error desconocido'}), 500
+        elif request.method == 'GET':
+            countries = CountryDAO.getCountrys()
+            return jsonify(countries), 200
+    except Exception as ex:
+        return jsonify({'message': str(ex)}), 500
 
 
 @countriesMain.route('/country/<int:id>', methods=['GET', 'PUT', 'DELETE'])

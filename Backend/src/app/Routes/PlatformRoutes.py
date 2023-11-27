@@ -9,26 +9,22 @@ platformsMain = Blueprint('platformBlueprint', __name__)
 
 @platformsMain.route('/platforms/', methods=['GET', 'POST'])
 def handlePlatforms():
-        try:
-            print(request.method)
-            if request.method == 'POST':
-                hasAccess = Security.verifyToken(request.headers, required_role=3)
-                if hasAccess:
-                    data = request.json
-                    result = PlatformDAO.createPlatform(data)
-                    if isinstance(result, Platform):  
-                        return jsonify({'message': 'Operación POST exitosa'}), 201
-                    else:
-                        return jsonify({'message': 'Error desconocido'}), 500
-            elif request.method == 'GET':
-                hasAccess=Security.verifyToken(request.headers)
-                if hasAccess:
-                    platforms = PlatformDAO.getPlatforms()
-                    return jsonify(platforms), 200
-                else: 
-                    return jsonify({'message': 'Unauthorized'}), 401
-        except Exception as ex:
-            return jsonify({'message': str(ex)}), 500
+    try:
+        print(request.method)
+        if request.method == 'POST':
+            hasAccess = Security.verifyToken(request.headers, required_role=3)
+            if hasAccess:
+                data = request.json
+                result = PlatformDAO.createPlatform(data)
+                if isinstance(result, Platform):  
+                    return jsonify({'message': 'Operación POST exitosa'}), 201
+                else:
+                    return jsonify({'message': 'Error desconocido'}), 500
+        elif request.method == 'GET':
+            platforms = PlatformDAO.getPlatforms()
+            return jsonify(platforms), 200
+    except Exception as ex:
+        return jsonify({'message': str(ex)}), 500
 
 
 @platformsMain.route('/platform/<int:id>', methods=['GET', 'PUT', 'DELETE'])
