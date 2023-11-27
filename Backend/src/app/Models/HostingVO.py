@@ -15,7 +15,7 @@ class Hosting(db.Model):
 
     def __init__(self, hosting_name, isActive, platform_id, plan_id, buyout_id):
         self.hosting_name = hosting_name
-        self.isActive = isActive
+        self.isActive = self._parse_boolean(isActive)
         self.platform_id = platform_id
         self.plan_id = plan_id
         self.buyout_id = buyout_id
