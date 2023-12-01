@@ -49,7 +49,7 @@ def handlePlatformById(id):
                 if hasAccess:
                     data = request.json
                     print(data)
-                    platform = PlatformDAO.getPlatformById(id, data)
+                    platform = PlatformDAO.updatePlatform(id, data)
                     if platform is not None:
                         return jsonify({'message': 'Platform actualizado con éxito'}), 200
                     else:

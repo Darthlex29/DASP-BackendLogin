@@ -21,7 +21,7 @@ def handleCategories():
                 else:
                     return jsonify({'message': 'Error desconocido'}), 500
         elif request.method == 'GET':
-            categories = CategoryDAO.getCategories()
+            categories = CategoryDAO.getCategorys()
             return jsonify(categories), 200
     except Exception as ex:
         return jsonify({'message': str(ex)}), 500

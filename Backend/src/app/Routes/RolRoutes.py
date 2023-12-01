@@ -16,6 +16,7 @@ def handleRols():
                 if hasAccess:
                     data = request.json
                     result = RolDAO.createRol(data)
+                    print(result)
                     if isinstance(result, Rol):  
                         return jsonify({'message': 'Operación POST exitosa'}), 201
                     else:
@@ -47,7 +48,7 @@ def handleRolById(id):
             if hasAccess:
                 data = request.json
                 print(data)
-                rol = RolDAO.getRolById(id, data)
+                rol = RolDAO.updateRol(id, data)
                 if rol is not None:
                     return jsonify({'message': 'Rol actualizado con éxito'}), 200
                 else:

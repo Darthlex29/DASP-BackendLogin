@@ -10,7 +10,7 @@ class RolDAO():
             nuevoRol = Rol(**data)
             db.session.add(nuevoRol)
             db.session.commit()
-            return Rol
+            return nuevoRol
         except Exception or SQLAlchemyError as ex:
             print("error")
             return Exception(ex)

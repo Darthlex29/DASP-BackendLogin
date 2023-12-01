@@ -22,7 +22,6 @@ class Security():
         }
         return jwt.encode(payload, cls.secret, algorithm = "HS256")
 
-
     @classmethod
     def verifyToken(cls, headers, required_role=None):
         if 'Authorization' in headers.keys():
@@ -33,7 +32,7 @@ class Security():
                 user_role = payload.get('rol_id')
 
                 # Permitir acceso si el usuario tiene el rol 3 (o si no se especifica un rol requerido)
-                if user_role == 3 or (required_role is None or user_role == required_role):
+                if user_role == 3 or required_role is None or user_role == required_role:
                     print("Hay acceso")
                     return True
                 

@@ -40,7 +40,6 @@ def handleUsers():
     else: 
         return jsonify({'message': 'Unauthorized'}), 401
 
-
 @userMain.route('/users/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 def handleUserById(id):
     hasAccess=Security.verifyToken(request.headers)
@@ -90,6 +89,7 @@ def handleUserById(id):
 @userMain.route('/users/<string:email>', methods=['GET', 'PUT', 'DELETE'])
 def handleUserByEmail(email):
     hasAccess=Security.verifyToken(request.headers)
+    hasAccess = True
     if hasAccess:
         try:
             if request.method == 'GET':

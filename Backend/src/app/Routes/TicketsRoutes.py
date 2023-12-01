@@ -50,7 +50,7 @@ def handleTicketById(id):
             if hasAccess:
                 data = request.json
                 print(data)
-                ticket = TicketDAO.uptadeTicket(id, data)
+                ticket = TicketDAO.updateTicket(id, data)
                 if ticket is not None:
                     return jsonify({'message': 'Ticket actualizado con éxito'}), 200
                 else:

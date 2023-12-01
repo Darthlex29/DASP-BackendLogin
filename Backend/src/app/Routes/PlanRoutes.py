@@ -47,7 +47,7 @@ def handlePlanById(id):
             if hasAccess:
                 data = request.json
                 print(data)
-                plan = PlanDAO.getPlanById(id, data)
+                plan = PlanDAO.updatePlan(id, data)
                 if plan is not None:
                     return jsonify({'message': 'Plan actualizado con éxito'}), 200
                 else:

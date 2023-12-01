@@ -16,6 +16,7 @@ def handleDistributors():
             if hasAccess:
                 data = request.json
                 result = DistributorDAO.createDistributor(data)
+                print(result)
                 if isinstance(result, Distributor):  
                     return jsonify({'message': 'Operación POST exitosa'}), 201
                 else:

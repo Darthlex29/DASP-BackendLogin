@@ -15,7 +15,7 @@ class BuyoutDAO():
                 db.session.commit()
                 return nuevoBuyout
             else: 
-                 return {'error': 'El usuario ya tiene un Buyout en estado Pending.'}
+                return {'error': 'El usuario ya tiene un Buyout en estado Pending.'}
         except Exception as ex:
             print("error")
             return Exception(ex)

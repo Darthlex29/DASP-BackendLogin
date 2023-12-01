@@ -47,7 +47,7 @@ def handlePayPlanById(id):
             if hasAccess:
                 data = request.json
                 print(data)
-                payPlan = PayPlanDAO.getPayPlanById(id, data)
+                payPlan = PayPlanDAO.updatePayPlan(id, data)
                 if payPlan is not None:
                     return jsonify({'message': 'PayPlan actualizado con éxito'}), 200
                 else:
